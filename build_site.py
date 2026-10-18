@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, "site")
 os.makedirs(os.path.join(OUT, "fig"), exist_ok=True)
 
 ARXIV_ID = None                       # fill in once posted
-CODE_URL = "https://github.com/benlten/closure"
+CODE_URL = "https://github.com/no-closure/closure"
 PAPER_PDF = "paper/closure.pdf"
 
 # ---------------------------------------------------------------- macros
