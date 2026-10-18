@@ -190,6 +190,22 @@ S.append(("faith", "Saliency overlays are often not faithful",
            ("f", fig("fig_faith.pdf"), caption("fig:faith"), "narrow")]))
 S.append(("table", "Results for every network", [("t", table_html(), TABLE_NOTE)]))
 
+# ---------------------------------------------------------------- copy overrides (site/copy.json, written from an Astra rewrite)
+import json
+HERO = {"lead": "Can a network that recognizes a complete outline still recognize it with the corners removed, and does it do better than on the same pieces rotated in place? The same question for Kanizsa figures. Each dot is one network's accuracy on that condition (chance 0.10, red; 1.00, green; hover for the value).",
+        "tldr": MACROS['nnNets'] + " networks, stimuli sized in patch units, same-ink controls and null observers: deep networks group nearby, consistently oriented contour pieces; they do not close gaps, and illusory contours are at most weakly represented."}
+copy_src = {"hero": HERO, "sections": [{"id": i, "title": t, "paragraphs": [b[1] for b in blocks if b[0] == "p"]} for i, t, blocks in S]}
+json.dump(copy_src, open(os.path.join(OUT, "copy_src.json"), "w"), indent=1, ensure_ascii=False)
+if os.path.exists(os.path.join(OUT, "copy.json")):
+    ov = json.load(open(os.path.join(OUT, "copy.json")))
+    HERO.update(ov.get("hero", {}))
+    for sec in ov.get("sections", []):
+        for k, (i, t, blocks) in enumerate(S):
+            if i == sec["id"]:
+                ps = iter(sec.get("paragraphs", []))
+                nb = [("p", next(ps, b[1])) if b[0] == "p" else b for b in blocks]
+                S[k] = (i, sec.get("title", t), nb)
+
 # ---------------------------------------------------------------- teaser (contact-sheet crops + accuracy dots from Table 1)
 from PIL import Image
 sheet = Image.open(os.path.join(FIGDIR, "stimuli_contact_sheet.png"))
@@ -259,7 +275,7 @@ paper_btn = (f'<a class="btn" href="https://arxiv.org/abs/{ARXIV_ID}">{ICON_PDF}
              else f'<a class="btn" href="{PAPER_PDF}">{ICON_PDF} Paper</a>')
 bibtex = html.escape("""@article{tenwolde2026closure,
   title   = {Closure That Isn't: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure},
-  author  = {ten Wolde, Benjamin},
+  author  = {TenWolde, Benjamin},
   journal = {arXiv preprint},
   year    = {2026}
 }""")
@@ -317,18 +333,18 @@ footer{{font-size:13px;color:var(--muted);margin-top:60px;border-top:1px solid v
 <header>
 <h1>Closure That Isn't: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure</h1>
 <p class="venue">Preprint, 2026</p>
-<p class="authors">Benjamin ten Wolde</p>
+<p class="authors">Benjamin TenWolde</p>
 <p class="affil">University of California San Diego</p>
 <div class="btns">{paper_btn}<a class="btn" href="{CODE_URL}">{ICON_GH} Code &amp; stimuli</a><a class="btn" href="#cite">{ICON_Q} BibTeX</a></div>
 </header>
 
 {teaser}
-<p class="lead">Can a network that recognizes a complete outline still recognize it with the corners removed, and does it do better than on the same pieces rotated in place? The same question for Kanizsa figures. Each dot is one network's accuracy on that condition (chance 0.10, red; 1.00, green; hover for the value).</p>
+<p class="lead">{HERO['lead']}</p>
 <p class="legend">Dots, left to right: {legend}.</p>
 <nav>{nav}</nav>
 
 <section class="abstract"><h2>Abstract</h2><p>{ABSTRACT}</p></section>
-<p class="tldr">{MACROS['nnNets']} networks, stimuli sized in patch units, same-ink controls and null observers: deep networks group nearby, consistently oriented contour pieces; they do not close gaps, and illusory contours are at most weakly represented.</p>
+<p class="tldr">{HERO['tldr']}</p>
 
 {body}
 

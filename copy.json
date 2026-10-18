@@ -1,0 +1,85 @@
+{
+ "hero": {
+  "lead": "Can networks recognize outlines with the corners removed, or Kanizsa figures, better than the same pieces rotated in place? Each dot shows one network's accuracy: red = chance (0.10), green = 1.00; hover for the value.",
+  "tldr": "Across 24 networks, stimuli sized in patch units, same-ink controls and null observers show that deep networks group nearby, consistently oriented contour pieces but do not close gaps; illusory contours are at most weakly represented."
+ },
+ "sections": [
+  {
+   "id": "stimuli",
+   "title": "Stimuli",
+   "paragraphs": [
+    "We train networks to classify regular polygons with 3 to 12 sides, the ten-way task of Zhang et al. (2024). We set all lengths in units of patch size <i>P</i> (16 px for ViT-B/16 and the CNNs, 14 px for DINOv2) and render images natively at 224 px with <i>4×</i> supersampling, without resizing. Every class has a circumradius of <i>4.5P</i>, so overall size carries no class information."
+   ]
+  },
+  {
+   "id": "illusory",
+   "title": "Illusory contours",
+   "paragraphs": [
+    "Across all networks that learned the training task, using the first training seed of each, Kanizsa accuracy ranges from 0.04 to 0.39 (chance 0.10), and the Kanizsa closure index reaches at most +0.10 in frozen ViT-B/16. Across three to five training seeds of three networks, fragment closure indices and arrangement effects (accuracy in place minus accuracy with scrambled positions) replicate, with largest s.d. values of 0.03 and 0.05, respectively. The Kanizsa index is small but consistent in fine-tuned ViT-B/16 (+0.08 to +0.14, Kanizsa accuracy 0.18–0.35), inconsistent in DINOv2-S (+0.01 to +0.15) and near zero in ResNet50 (-0.05 to +0.07), against 1.00 accuracy on complete outlines in every case. Frozen and looped ViT-B/16 show indices of the same size: ViT-B/16 carries a weak illusory-contour signal, consistent across seeds only in this network. Class-specific relevance maps (Chefer et al., 2021) for the top-1 class illustrate this pattern: the networks label Kanizsa triangles and squares as hexagons and give their rotated inducers the same label."
+   ]
+  },
+  {
+   "id": "arrangement",
+   "title": "Fragment arrangement",
+   "paragraphs": [
+    "With corners removed, fine-tuned ViT-B and DINOv2 (plain and looped) classify fragmented outlines at 0.84–0.96 in the orientation-control battery, a separate test set with fragments in place, scrambled and in cue conflict, at gaps of <i>0.5</i>–<i>2P</i>. Their closure index across all gap sizes in the main battery is +0.60 to +0.80. Frozen backbones reach half to 70% of that, and fine-tuning raises the index 1.4–2<i>×</i> within each family. Scrambling positions while preserving orientations drops the fine-tuned transformers to 0.27–0.39, so arrangement adds +0.46 to +0.65 beyond orientation statistics."
+   ]
+  },
+  {
+   "id": "where",
+   "title": "Across layers",
+   "paragraphs": [
+    "We apply the linear probe at every layer and find that fragment closure in fine-tuned transformers rises through the middle blocks and peaks late (ViT-B +0.68, DINOv2-S +0.79). In looped ViT, it reaches +0.73 by the fourth pass through the shared core and gains at most about 0.02 with further iterations. Additional loops therefore add depth without adding closure. Frozen ViT-B peaks at +0.60, and fine-tuned ResNet50 peaks at +0.52 in its last stage."
+   ]
+  },
+  {
+   "id": "recurrence",
+   "title": "Recurrence",
+   "paragraphs": [
+    "Looping a fine-tuned transformer changes the fragment closure index by -0.01 to +0.01. Recurrence does not consistently improve this index: in 5 of 6 circuits, the single-iteration control is within 0.02 of, or above, its eight-iteration counterpart (for example, fGRU-H, +0.13 versus +0.18), and the one gain, +0.08 in deep fGRU D4, comes from a single seed. Gap similarity increases over iterations in fGRU-H and fGRU circuits, from 0.28 to 0.35 in fGRU-H, 0.17 to 0.42 in <i>γ</i>-net and 0.35 to 0.37 in eight-layer deep fGRU-H. These increases do not consistently accompany a higher closure index. Across recurrent circuits, the Kanizsa index reaches at most +0.06 (single-iteration controls +0.04), so recurrence adds no illusory-contour signal either."
+   ]
+  },
+  {
+   "id": "tracing",
+   "title": "Contour tracing",
+   "paragraphs": [
+    "Our recurrent circuits learned from complete outlines, a task that never demands long-range integration, so we also probed networks trained to segment the dashed contour carrying a marker, a Pathfinder-style curve-tracing task (Jolicoeur et al., 1986; Roelfsema et al., 1998). These networks include an hGRU, two xhGRUs trained on contours of 6 and 14 dashes, an fGRU/<i>γ</i>-net and weight-tied looped local-attention transformers. The companion project calls its models xhGRUs when it replaces the hGRU's per-iteration batch normalization with group normalization (Wu & He, 2018) shared across iterations. We took these networks from that project without retraining; their validation intersection-over-union (IoU) is 0.92–0.996 on 128 px images, and 0.80 for the untied control below. The training target is the full dashed contour, so a network that completes gaps has no reason to label them."
+   ]
+  },
+  {
+   "id": "gap",
+   "title": "Gap size",
+   "paragraphs": [
+    "Accuracy separates the network families when plotted against the number of ink-free patches a gap crosses; we did not test whether this count predicts accuracy better than gap size. For 3–6-sided polygons, we average over gaps crossing three or more empty patches, weighting bins of 3, 4, 5 and 6 or more empty patches equally. Fine-tuned transformers score 0.78–0.99, while CNNs and the representative fGRU-H/fGRU circuits score 0.10–0.39.",
+    "We define the critical gap <i>g<sup>*</sup></i> as the gap where the mid-gap closure index falls to half its value at the smallest gap, using linear interpolation in log gap; no network meets the exclusion threshold of an index below 0.05 at the smallest gap. We compute the index on a fixed set of 3- to 6-sided polygons, for which every gap size is valid, and compare <i>g<sup>*</sup></i> with measured ERF<i><sub>50</sub></i> for CNNs and recurrent circuits and with patch size for transformers. Excluding single-iteration controls, CNN and recurrent networks have <i>g<sup>*</sup></i> values of 6 to 50 px, with smaller residual effects possible beyond this point; in 9 of 10 networks, the full critical gap is smaller than ERF<i><sub>50</sub></i>, a radius (median ratio 0.44; 14 of 16 including single-iteration controls). The rank correlation with ERF<i><sub>50</sub></i> is only +0.33, and the exception, excluding single-iteration controls, is fGRU-H with a <i>1×1</i> readout, which adds no spatial convolution after recurrence and has the largest fragment closure index of any recurrent circuit (+0.63). We measure ERF<i><sub>50</sub></i> on noise images and, for deep hierarchies, at the first recurrent layer, so the comparison is descriptive: the gap fits within the region that influences a unit, but this does not show that the network uses that region for the task."
+   ]
+  },
+  {
+   "id": "inside",
+   "title": "Inside the gap",
+   "paragraphs": [
+    "A network that completes a contour should represent something where the piece is missing. We tested this with mid-gap fragments of 3- to 6-sided polygons, their rotated controls and matching complete outlines, using up to 48 image triplets per gap size. We sampled spatial features after each transformer block before final normalization, at the four ResNet50 stages and, for recurrent circuits, from the layer the classifier reads at every iteration. We selected cells that the missing contour passes through and that contain no visible ink in either the stimulus or the control.",
+    "By boundary completion (Grossberg & Mingolla, 1985), we mean a process that extends a contour from its ends into an empty gap over successive layers or iterations until the ends meet. Near ink, overlapping receptive fields and attention to neighbouring tokens make empty gap cells resemble the drawn contour. Farther away, that resemblance declines, though it remains above zero at four patches in transformers. We find no evidence that a process carries one contour end across the empty region to meet the other."
+   ]
+  },
+  {
+   "id": "audit",
+   "title": "Auditing published measures",
+   "paragraphs": [
+    "We recreated each measure's stimuli from its published specification and tested trained networks alongside null observers that cannot close contours: untrained networks, a Gabor energy bank, raw pixels and a <em>pixel-growth</em> observer. We used three seeds for untrained networks in the closure-measure audit and one for the extended configural-effect controls; the brightness audit uses no networks. Our <em>pixel-growth</em> observer represents ink's radial distribution around its centroid as a 20-bin histogram over distances of 0–120 px, normalized to sum to one: it discards angular information, but shape and arrangement can still change the radial distribution, and it differs from the pixel-by-pixel overlap controlled by Kim et al. (2021). The <em>pixel</em> observer is the image itself, average-pooled to <i>75×75</i>. The <em>Gabor</em> observer uses a fixed bank of quadrature-pair filters with wavelengths of 4, 8 and 12 px and eight orientations, with energy average-pooled to a <i>14×14</i> grid; it represents oriented edge energy without grouping."
+   ]
+  },
+  {
+   "id": "faith",
+   "title": "Saliency maps",
+   "paragraphs": [
+    "Saliency overlays often serve as evidence that a network “sees” a triangle. We tested each map by deleting ink in map order or random order (Petsiuk et al., 2018), calling the resulting score faithfulness in the sense used by Selvaraju et al. (2017). Grad-CAM (Selvaraju et al., 2017) and class-specific relevance maps (Chefer et al., 2021) have a median faithfulness of +0.020 and score near zero (<i>|·|&lt;0.02</i>) for 7 of 16 networks. Occlusion (Zeiler & Fergus, 2014) and Shapley values computed over the stimulus's own pieces score +0.051 and +0.043; we ran occlusion on a subset of 40 images per network. This provides separate evidence from the sanity checks of Adebayo et al. (2018), which Grad-CAM passed and which test a different property."
+   ]
+  },
+  {
+   "id": "table",
+   "title": "Results for all networks",
+   "paragraphs": []
+  }
+ ]
+}
