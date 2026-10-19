@@ -183,6 +183,7 @@ S.append(("inside", "What happens inside the gap",
            ("p", sentences("Little evidence of boundary completion", 3))]))
 S.append(("audit", "Published closure measures fail null observers",
           [("p", sentences("Auditing published closure measures", [0, 4, 2, 3])),
+           ("f", fig("fig_ce_stimuli.pdf"), caption("fig:cestim")),
            ("f", fig("fig_audit.pdf"), caption("fig:audit")),
            ("f", fig("fig_audit2.pdf"), caption("fig:audit2"))]))
 S.append(("faith", "Saliency overlays are often not faithful",
