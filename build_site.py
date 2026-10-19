@@ -275,7 +275,7 @@ ICON_Q = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><p
 paper_btn = (f'<a class="btn" href="https://arxiv.org/abs/{ARXIV_ID}">{ICON_PDF} arXiv</a>' if ARXIV_ID
              else f'<a class="btn" href="{PAPER_PDF}">{ICON_PDF} Paper</a>')
 bibtex = html.escape("""@article{tenwolde2026closure,
-  title   = {Closure That Isn't: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure},
+  title   = {Waiting for Closure: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure},
   author  = {TenWolde, Benjamin},
   journal = {arXiv preprint},
   year    = {2026}
@@ -287,7 +287,7 @@ page = f"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Closure That Isn't</title>
+<title>Waiting for Closure</title>
 <meta name="description" content="Deep networks integrate contours locally but do not perceive illusory closure: {MACROS['nnNets']} networks tested with patch-aware stimuli and null observers.">
 <style>
 :root{{--bg:#ffffff;--fg:#212529;--muted:#6c757d;--rule:#e6e6e6;--card:#f6f6f6;--btn:#363636;--btnfg:#ffffff;--accent:#b4231c;color-scheme:light}}
@@ -332,7 +332,7 @@ footer{{font-size:13px;color:var(--muted);margin-top:60px;border-top:1px solid v
 <body>
 <main>
 <header>
-<h1>Closure That Isn't: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure</h1>
+<h1>Waiting for Closure: Deep Networks Integrate Contours Locally but Do Not Perceive Illusory Closure</h1>
 <p class="venue">Preprint, 2026</p>
 <p class="authors">Benjamin TenWolde</p>
 <p class="affil">University of California San Diego</p>
