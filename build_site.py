@@ -275,7 +275,7 @@ ICON_Q = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><p
 paper_btn = (f'<a class="btn" href="https://arxiv.org/abs/{ARXIV_ID}">{ICON_PDF} arXiv</a>' if ARXIV_ID
              else f'<a class="btn" href="{PAPER_PDF}">{ICON_PDF} Paper</a>')
 bibtex = html.escape("""@article{tenwolde2026closure,
-  title   = {Waiting for Closure: Deep Networks Link Contours but Do Not Complete Them},
+  title   = {Waiting for Closure: Deep Networks Do Not Complete Contours},
   author  = {TenWolde, Benjamin},
   journal = {arXiv preprint},
   year    = {2026}
@@ -332,7 +332,7 @@ footer{{font-size:13px;color:var(--muted);margin-top:60px;border-top:1px solid v
 <body>
 <main>
 <header>
-<h1>Waiting for Closure: Deep Networks Link Contours but Do Not Complete Them</h1>
+<h1>Waiting for Closure: Deep Networks Do Not Complete Contours</h1>
 <p class="venue">Preprint, 2026</p>
 <p class="authors">Benjamin TenWolde</p>
 <p class="affil">University of California San Diego</p>
