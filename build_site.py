@@ -194,7 +194,7 @@ S.append(("table", "Results for every network", [("t", table_html(), TABLE_NOTE)
 # ---------------------------------------------------------------- copy overrides (site/copy.json, written from an Astra rewrite)
 import json
 HERO = {"lead": "Can a network that recognizes a complete outline still recognize it with the corners removed, and does it do better than on the same pieces rotated in place? The same question for Kanizsa figures. Each dot is one network's accuracy on that condition (chance 0.10, red; 1.00, green; hover for the value).",
-        "tldr": MACROS['nnNets'] + " networks, stimuli sized in patch units, same-ink controls and null observers: deep networks group nearby, consistently oriented contour pieces; they do not close gaps, and illusory contours are at most weakly represented."}
+        "tldr": MACROS['nnNets'] + " networks, stimuli sized in patch units, matched controls and null observers: deep networks group nearby, consistently oriented contour pieces; they do not close gaps, and illusory contours are at most weakly represented."}
 copy_src = {"hero": HERO, "sections": [{"id": i, "title": t, "paragraphs": [b[1] for b in blocks if b[0] == "p"]} for i, t, blocks in S]}
 json.dump(copy_src, open(os.path.join(OUT, "copy_src.json"), "w"), indent=1, ensure_ascii=False)
 if os.path.exists(os.path.join(OUT, "copy.json")):
