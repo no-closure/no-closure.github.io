@@ -93,8 +93,9 @@ def tex2html(s):
     s = re.sub(r"\\citealp\{([^}]*)\}", lambda m: cite(m.group(1), False)[1:-1], s)
     s = re.sub(r"(Fig\.|Figs\.|Table|Section|Appendix|Sections)~\\ref\{([^}]*)\}", lambda m: ref(m.group(2)), s)
     s = re.sub(r"\\ref\{([^}]*)\}", lambda m: ref(m.group(1)), s)
-    s = re.sub(r"\\(n[A-Za-z]+)\{\}", lambda m: MACROS.get(m.group(1), m.group(0)), s)
-    s = re.sub(r"\\(n[A-Za-z]+)(?![A-Za-z])", lambda m: MACROS.get(m.group(1), m.group(0)), s)
+    s = re.sub(r"\\([A-Za-z]+)\{\}", lambda m: MACROS.get(m.group(1), m.group(0)), s)
+    s = re.sub(r"\\([A-Za-z]+)(?![A-Za-z])", lambda m: MACROS.get(m.group(1), m.group(0)), s)
+    s = s.replace(r"\textdegree{}", "°").replace(r"\textdegree", "°")
     s = re.sub(r"\$([^$]*)\$", lambda m: math(m.group(1)), s)
     s = s.replace(r"\%", "%").replace(r"\,", " ").replace("~", "&nbsp;").replace("--", "–").replace("``", "“").replace("''", "”")
     s = s.replace(r"\&", "&amp;").replace(r"\_", "_").replace("\\ ", " ").replace(r"\dagger", "†")
@@ -181,6 +182,18 @@ S.append(("inside", "What happens inside the gap",
           [("p", sentences("What happens inside the gap", 3)),
            ("f", fig("fig_gapdyn.pdf"), caption("fig:gapdyn")),
            ("p", sentences("Little evidence of boundary completion", 3))]))
+S.append(("probe", "Between the inducers",
+          [("p", sentences("Nothing is represented between the inducers", [0, 5, 6, 7])),
+           ("f", fig("fig_probe.pdf"), caption("fig:probe"))]))
+S.append(("patch", "Activation patching",
+          [("p", sentences("The transformers' Kanizsa evidence does not pass through the gaps", [0, 2, 4])),
+           ("f", fig("fig_gap_patch.png"), caption("fig:patch"), "narrow"),
+           ("p", sentences("The transformers' Kanizsa evidence does not pass through the gaps", [5, 6, 7]))]))
+S.append(("cued", "Cued segmentation circuits",
+          [("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [0, 1, 2, 10, 11, 12])),
+           ("f", fig("fig_cued_gap.pdf"), caption("fig:cuedgap")),
+           ("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [15, 25])),
+           ("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [26, 28, 29, 32]))]))
 S.append(("audit", "Published closure measures fail null observers",
           [("p", sentences("Auditing published closure measures", [0, 4, 2, 3])),
            ("f", fig("fig_ce_stimuli.pdf"), caption("fig:cestim")),
