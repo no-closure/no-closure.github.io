@@ -185,6 +185,10 @@ S.append(("inside", "What happens inside the gap",
 S.append(("probe", "Between the inducers",
           [("p", sentences("Nothing is represented between the inducers", [0, 5, 6, 7])),
            ("f", fig("fig_probe.pdf"), caption("fig:probe"))]))
+S.append(("mae", "Masked autoencoders",
+          [("p", sentences("Masked autoencoders draw the illusory edge only when the inducers are hidden too", [0, 1, 2, 3])),
+           ("f", fig("fig_mae_li.pdf"), caption("fig:maeli")),
+           ("p", sentences("Masked autoencoders draw the illusory edge only when the inducers are hidden too", [4, 5, 6, 8, 9]))]))
 S.append(("patch", "Activation patching",
           [("p", sentences("The transformers' Kanizsa evidence does not pass through the gaps", [0, 2, 4])),
            ("f", fig("fig_gap_patch.png"), caption("fig:patch"), "narrow"),
