@@ -5,6 +5,13 @@
  },
  "sections": [
   {
+   "id": "animations",
+   "title": "The signal, layer by layer and step by step",
+   "paragraphs": [
+    "Every family of networks in the paper, watched as the signal moves through it. Feed-forward classifiers are shown layer by layer, looped and recurrent networks iteration by iteration, and the feedback networks inside pretrained transformers step by step. Nowhere does a label appear between the inducers that was not there in the first pass."
+   ]
+  },
+  {
    "id": "stimuli",
    "title": "Stimuli sized in patch units",
    "paragraphs": [

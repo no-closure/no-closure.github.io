@@ -182,6 +182,22 @@ TABLE_NOTE = tex2html(re.search(r"\\caption\{(All networks\..*?)\}\s*\\label\{ta
 
 # ---------------------------------------------------------------- sections
 S = []  # (id, title, [blocks])
+# ---- animations first (Ben 2026-11-07: an animation per network type, prominent on the page)
+def vrow(items):
+    return [(media(n), l) for n, l in items]
+ANIM_CAP_LAYERS = ("The contour probe, a logistic regression per layer fitted on complete outlines that labels a cell as holding contour, played layer by layer in orange over the stimulus. "
+                   "Columns in each frame: a Kanizsa square (inducer radius 1.5 patches), its rotated control, the complete outline, the square with corners removed, the same pieces rotated.")
+ANIM_CAP_STEPS = ("The feedback networks' own label (probability that a pixel belongs to the cued object) over recurrent steps 1 to 80: the Kanizsa square at support ratio 0.7, the inducers turned by 180°, the gaps drawn as lines, the inducers closed into discs; the cue is the blue dot. "
+                  "The first pass labels the square and the controls; the loop removes the label from the controls and keeps it on the square, or, in the failing runs, removes it everywhere.")
+S.append(("animations", "The signal, layer by layer and step by step",
+          [("p", "Every family of networks in the paper, watched as the signal moves through it. Feed-forward classifiers are shown layer by layer, looped and recurrent networks iteration by iteration, and the feedback networks inside pretrained transformers step by step. Nowhere does a label appear between the inducers that was not there in the first pass."),
+           ("v", vrow([("layers_full_vit_b16", "ViT-B/16, fine-tuned (12 blocks)"), ("layers_full_dinov2_s14", "DINOv2-S, fine-tuned (12 blocks)"), ("layers_full_resnet50", "ResNet50, fine-tuned (4 stages)"),
+                       ("layers_probe_vgg16", "VGG16, frozen (5 stages)"), ("layers_probe_vit_b16", "ViT-B/16, frozen"), ("layers_probe_dinov2_s14", "DINOv2-S, frozen")]), "Feed-forward classifiers. " + ANIM_CAP_LAYERS),
+           ("v", vrow([("layers_looped_vit_b16", "looped ViT-B/16 (24 executed blocks)"), ("layers_looped_dinov2_s14", "looped DINOv2-S (24 executed blocks)"), ("layers_hgru", "fGRU-H (8 iterations)"),
+                       ("layers_gammanet", "γ-net (8 iterations)"), ("layers_deep_fgru_D4", "deep fGRU D4 (8 iterations)"), ("layers_dn_fgru_L8", "DN fGRU L8 (8 iterations)")]), "Looped transformers and recurrent circuits. " + ANIM_CAP_LAYERS),
+           ("v", vrow([("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_sam3_olfd_s1_sel", "SAM 3, faded covers, seed 1"),
+                       ("p1_j21l_ol_s0_sel", "V-JEPA 2.1 L, seed 0"), ("p1_j21l_ol_s1_sel", "V-JEPA 2.1 L, seed 1"), ("p1_j21l_olnl_s1_sel", "2.1 L, no layer labels"),
+                       ("p1_j20_ol_s0_sel", "V-JEPA 2 L, seed 0"), ("lvu224_ol_s0_sel", "LeVJEPA L, whole encoder"), ("p1_s3j21_ol_s0_sel", "SAM 3 front + 2.1 back")]), "Feedback inside pretrained transformers. " + ANIM_CAP_STEPS)]))
 S.append(("stimuli", "Stimuli sized in patch units",
           [("p", sentences("Stimuli", 3)), ("f", fig("stimuli_contact_sheet.png"), caption("fig:stimuli"))]))
 S.append(("illusory", "Illusory contours are at most weakly represented",
@@ -336,12 +352,11 @@ def block(b):
         for m, label in b[1]:
             if not m:
                 continue
-            if "mp4" in m:
-                poster = f' poster="{m["poster"]}"' if "poster" in m else ""
-                v = f'<video autoplay loop muted playsinline preload="metadata"{poster}><source src="{m["mp4"]}" type="video/mp4"></video>'
-            else:
-                v = f'<img src="{m.get("gif", m.get("poster", ""))}" alt="{label}" loading="lazy">'
-            cells += f'<div class="vcell">{v}<div class="vname">{label}</div></div>'
+            # GIF first: it animates in every browser without autoplay permission; the MP4 is linked for download
+            src = m.get("gif") or m.get("poster", "")
+            v = f'<img src="{src}" alt="{label}" loading="lazy">'
+            link = f' · <a href="{m["mp4"]}">mp4</a>' if "mp4" in m else ""
+            cells += f'<div class="vcell">{v}<div class="vname">{label}{link}</div></div>'
         return f'<figure class="anim"><div class="vrow">{cells}</div><figcaption>{b[2]}</figcaption></figure>'
 
 
