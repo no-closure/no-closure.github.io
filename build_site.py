@@ -186,7 +186,7 @@ S = []  # (id, title, [blocks])
 def vrow(items):
     return [(media(n), l) for n, l in items]
 ANIM_CAP_LAYERS = ("The contour probe, a logistic regression per layer fitted on complete outlines that labels a cell as holding contour, played layer by layer in orange over the stimulus. "
-                   "Columns in each frame: a Kanizsa square (inducer radius 1.5 patches), its rotated control, the complete outline, the square with corners removed, the same pieces rotated.")
+                   "Columns in each frame: Kanizsa square, triangle and hexagon (inducer radius 1.5 patches), each with its rotated control, then the complete square outline, the square with corners removed and the same pieces rotated.")
 ANIM_CAP_STEPS = ("The feedback networks' own label (probability that a pixel belongs to the cued object) over recurrent steps 1 to 80: the Kanizsa square at support ratio 0.7, the inducers turned by 180°, the gaps drawn as lines, the inducers closed into discs; the cue is the blue dot. "
                   "The first pass labels the square and the controls; the loop removes the label from the controls and keeps it on the square, or, in the failing runs, removes it everywhere.")
 S.append(("animations", "The signal, layer by layer and step by step",
@@ -214,7 +214,7 @@ S.append(("where", "Where closure emerges, and what the maps show",
            ("f", fig("fig_layers.pdf"), caption("fig:layers"), "narrow"),
            ("f2", fig("example_labels_dinov2.png"), fig("example_shap_dinov2.png"), caption("fig:example")),
            ("v", [(media(n), l) for n, l in [("layers_full_vit_b16", "ViT-B/16, fine-tuned"), ("layers_full_dinov2_s14", "DINOv2-S, fine-tuned"), ("layers_full_resnet50", "ResNet50, fine-tuned"), ("layers_probe_vgg16", "VGG16, frozen")]],
-            "The contour probe (a logistic regression per layer that labels a cell as holding contour, fitted on complete outlines) played layer by layer, in orange over the stimulus: a Kanizsa square (inducer radius 1.5 patches), its rotated control, the complete outline, the square with corners removed and the same pieces rotated. The probe follows drawn contour from the first block and fills one-patch gaps in the middle blocks; the illusory edges stay empty at every layer.")]))
+            "The contour probe (a logistic regression per layer that labels a cell as holding contour, fitted on complete outlines) played layer by layer, in orange over the stimulus: Kanizsa square, triangle and hexagon (inducer radius 1.5 patches), each with its rotated control, then the complete outline, the square with corners removed and the same pieces rotated. The probe follows drawn contour from the first block and fills one-patch gaps in the middle blocks; the illusory edges stay empty at every layer.")]))
 S.append(("recurrence", "Recurrence does not consistently add closure",
           [("p", sentences("Looped transformers and recirculation", [1]) + " " + sentences("Horizontal and top-down recurrent circuits", [2, 1, 5])),
            ("f", fig("fig_recurrence.pdf"), caption("fig:recurrence")),
