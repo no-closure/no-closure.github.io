@@ -41,13 +41,14 @@ for blk in re.split(r"\n(?=@)", open(BIB).read()):
     BIBS[m.group(1)] = (first, yr.group(1) if yr else "")
 
 SRC = open(TEX).read()
+SRC = re.sub(r"\\input\{journey/([^}]*)\}", lambda m: open(os.path.join(os.path.dirname(TEX), "journey", m.group(1) + ("" if m.group(1).endswith(".tex") else ".tex"))).read(), SRC)   # the journey sections are \input files (2026-11-07)
 
 # figure labels → numbers (order of appearance), subsection labels → titles
 FIGLABELS = re.findall(r"\\begin\{figure\}.*?\\label\{(fig:[^}]*)\}", SRC, flags=re.S)
 FIGNUM = {l: i + 1 for i, l in enumerate(FIGLABELS)}
 TABLABELS = re.findall(r"\\begin\{table\}.*?\\label\{(tab:[^}]*)\}", SRC, flags=re.S)
 TABNUM = {l: i + 1 for i, l in enumerate(TABLABELS)}
-SECTITLE = {m.group(2): m.group(1) for m in re.finditer(r"\\(?:sub)?section\{([^}]*)\}\s*\\label\{([^}]*)\}", SRC)}
+SECTITLE = {m.group(2): m.group(1) for m in re.finditer(r"\\(?:sub)*section\{([^}]*)\}\s*\\label\{([^}]*)\}", SRC)}
 
 
 def cite(keys, textual):
@@ -97,7 +98,7 @@ def tex2html(s):
     s = re.sub(r"\\([A-Za-z]+)(?![A-Za-z])", lambda m: MACROS.get(m.group(1), m.group(0)), s)
     s = s.replace(r"\textdegree{}", "°").replace(r"\textdegree", "°")
     s = re.sub(r"\$([^$]*)\$", lambda m: math(m.group(1)), s)
-    s = s.replace(r"\%", "%").replace(r"\,", " ").replace("~", "&nbsp;").replace("--", "–").replace("``", "“").replace("''", "”")
+    s = s.replace("{,}", ",").replace(r"\%", "%").replace(r"\,", " ").replace("~", "&nbsp;").replace("--", "–").replace("``", "“").replace("''", "”")
     s = s.replace(r"\&", "&amp;").replace(r"\_", "_").replace("\\ ", " ").replace(r"\dagger", "†")
     s = re.sub(r"\\footnote\{[^}]*\}", "", s)
     s = re.sub(r"\\label\{[^}]*\}", "", s)
@@ -109,7 +110,7 @@ def tex2html(s):
 
 def sentences(label_or_title, n):
     """First n sentences (or the listed line indices) of the (sub)section with this title, figures/tables removed."""
-    m = re.search(r"\\(?:sub)?section\{" + re.escape(label_or_title) + r"\}(.*?)(?=\\(?:sub)?section|\\end\{document\})", SRC, flags=re.S)
+    m = re.search(r"\\(?:sub)*section\{" + re.escape(label_or_title) + r"\}(.*?)(?=\\(?:sub)*section|\\end\{document\})", SRC, flags=re.S)
     body = m.group(1)
     body = re.sub(r"\\begin\{(figure|table)\}.*?\\end\{\1\}", "", body, flags=re.S)
     body = re.sub(r"\\label\{[^}]*\}", "", body)
@@ -127,6 +128,15 @@ def caption(label):
 
 ABSTRACT = tex2html(re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", SRC, flags=re.S).group(1))
 
+
+def jlines(name, idxs):
+    """Chosen lines (paragraph sentences) of papers/tmlr/journey/<name>.tex, figures and comments removed (journey write-up, 2026-11-07)."""
+    body = open(os.path.join(ROOT, "papers/tmlr/journey", name + ".tex")).read()
+    body = re.sub(r"\\begin\{(figure|table)\}.*?\\end\{\1\}", "", body, flags=re.S)
+    body = re.sub(r"(?m)^%.*$", "", body)
+    sents = [x.strip() for x in body.strip().split("\n") if x.strip() and not x.strip().startswith("\\textbf{") or (x.strip().startswith("\\textbf{") and len(x.strip()) > 60)]
+    return " ".join(tex2html(sents[i]) for i in idxs if i < len(sents))
+
 # ---------------------------------------------------------------- figures → png
 def fig(name, dpi=150):
     base, ext = os.path.splitext(name)
@@ -137,6 +147,21 @@ def fig(name, dpi=150):
     else:
         subprocess.run(["cp", src, out], check=True)
     return f"fig/{base}.png"
+
+
+ANIM = os.path.join(ASSETS, "anim")   # step / layer animations (mp4 + gif + contact sheet), journey write-up 2026-11-07
+os.makedirs(os.path.join(OUT, "fig", "anim"), exist_ok=True)
+
+
+def media(name):
+    """Copy an animation (name.mp4, name.gif, name_sheet.png as poster) from papers/assets/anim into site/fig/anim."""
+    out = {}
+    for ext, key in ((".mp4", "mp4"), (".gif", "gif"), ("_sheet.png", "poster")):
+        src = os.path.join(ANIM, name + ext)
+        if os.path.exists(src):
+            subprocess.run(["cp", src, os.path.join(OUT, "fig", "anim", name + ext)], check=True)
+            out[key] = f"fig/anim/{name}{ext}"
+    return out
 
 
 # ---------------------------------------------------------------- table
@@ -165,10 +190,14 @@ S.append(("arrangement", "Fine-tuned transformers integrate fragments, and the a
 S.append(("where", "Where closure emerges, and what the maps show",
           [("p", sentences("Where closure emerges, and what the maps show", 3)),
            ("f", fig("fig_layers.pdf"), caption("fig:layers"), "narrow"),
-           ("f2", fig("example_labels_dinov2.png"), fig("example_shap_dinov2.png"), caption("fig:example"))]))
+           ("f2", fig("example_labels_dinov2.png"), fig("example_shap_dinov2.png"), caption("fig:example")),
+           ("v", [(media(n), l) for n, l in [("layers_full_vit_b16", "ViT-B/16, fine-tuned"), ("layers_full_dinov2_s14", "DINOv2-S, fine-tuned"), ("layers_full_resnet50", "ResNet50, fine-tuned"), ("layers_probe_vgg16", "VGG16, frozen")]],
+            "The contour probe (a logistic regression per layer that labels a cell as holding contour, fitted on complete outlines) played layer by layer, in orange over the stimulus: a Kanizsa square (inducer radius 1.5 patches), its rotated control, the complete outline, the square with corners removed and the same pieces rotated. The probe follows drawn contour from the first block and fills one-patch gaps in the middle blocks; the illusory edges stay empty at every layer.")]))
 S.append(("recurrence", "Recurrence does not consistently add closure",
-          [("p", sentences("Recurrence does not consistently add closure", [0, 7, 5, 6, 10])),
-           ("f", fig("fig_recurrence.pdf"), caption("fig:recurrence"))]))
+          [("p", sentences("Looped transformers and recirculation", [0]) + " " + sentences("Horizontal and top-down recurrent circuits", [2, 0, 1, 5])),
+           ("f", fig("fig_recurrence.pdf"), caption("fig:recurrence")),
+           ("v", [(media(n), l) for n, l in [("layers_looped_vit_b16", "looped ViT-B/16, 24 executed blocks"), ("layers_hgru", "fGRU-H, 8 iterations"), ("layers_gammanet", "γ-net, 8 iterations"), ("layers_dn_fgru_L8", "DN fGRU L8, 8 iterations")]],
+            "The same contour probe over the looped transformer's executed blocks and over the recurrent circuits' iterations (the state the classifier reads). Passes through the core repeat the same map; in the circuits the map is set in the first iteration and sharpens on the drawn contour. The gap between the inducers stays empty.")]))
 S.append(("tracing", "Networks trained to trace contours link pieces but do not complete them",
           [("p", sentences("Networks trained to trace contours link pieces but do not complete them", 2)),
            ("f", fig("fig_tracing.pdf"), caption("fig:tracing"))]))
@@ -207,6 +236,26 @@ S.append(("faith", "Saliency overlays are often not faithful",
           [("p", sentences("Saliency overlays are often not faithful", 3)),
            ("f", fig("fig_faith.pdf"), caption("fig:faith"), "narrow")]))
 S.append(("table", "Results for every network", [("t", table_html(), TABLE_NOTE)]))
+
+# ---- the feedback networks (journey write-up, 2026-11-07): step-by-step animations per network, from papers/assets/anim
+FB_NETS = [("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_sam3_olfd_s1_sel", "SAM 3, faded covers, seed 1"),
+           ("p1_j21l_ol_s0_sel", "V-JEPA 2.1 L, seed 0"), ("p1_j21l_ol_s1_sel", "V-JEPA 2.1 L, seed 1"), ("p1_j21l_olnl_s1_sel", "2.1 L, no layer labels"),
+           ("p1_j20_ol_s0_sel", "V-JEPA 2 L, seed 0"), ("lvu224_ol_s0_sel", "LeVJEPA L, whole encoder"), ("p1_s3j21_ol_s0_sel", "SAM 3 front + 2.1 back")]
+fb_media = [(media(n), lab) for n, lab in FB_NETS]
+fb_media = [(m, lab) for m, lab in fb_media if m]
+FB_CAPTION = ("Each loop plays the network's label (orange: probability that a pixel belongs to the cued object) over recurrent steps 1 to 80 on the Kanizsa square "
+              "(support ratio 0.7), the inducers turned by 180°, the gaps drawn as lines, and the inducers closed into discs; the cue is the blue dot at the centre. "
+              "In the SAM 3 networks the first pass labels the square and the controls alike, and the loop removes the label from the controls; in the no-layer-label control the loop builds a label on everything.")
+S.insert([i for i, (sid, _, _) in enumerate(S) if sid == "cued"][0] + 1,
+         ("feedback", "Feedback inside pretrained transformers",
+          [("p", jlines("results_feedback", [2, 3, 4])),
+           ("v", fb_media, FB_CAPTION),
+           ("p", jlines("results_feedback", [9, 10, 11, 12])),
+           ("f", fig("fig_fb_steps.pdf"), caption("fig:fbsteps")),
+           ("p", jlines("results_feedback", [14, 15, 16, 17])),
+           ("f", fig("fig_fb_depth.pdf"), caption("fig:fbdepth")),
+           ("p", jlines("results_feedback", [26, 27, 28, 29])),
+           ("f", fig("fig_fb_pacmen.pdf"), caption("fig:fbpacmen"), "narrow")]))
 
 # ---------------------------------------------------------------- copy overrides (site/copy.json, written from an Astra rewrite)
 import json
@@ -280,6 +329,18 @@ def block(b):
         return f'<figure><img src="{b[1]}" alt="" loading="lazy"><img class="narrow" src="{b[2]}" alt="" loading="lazy"><figcaption>{b[3]}</figcaption></figure>'
     if b[0] == "t":
         return f'<div class="tablewrap">{b[1]}</div><p class="note">{b[2]}</p>'
+    if b[0] == "v":   # ("v", [(media dict, label), ...], caption): a row of looping videos (gif fallback), one per network
+        cells = ""
+        for m, label in b[1]:
+            if not m:
+                continue
+            if "mp4" in m:
+                poster = f' poster="{m["poster"]}"' if "poster" in m else ""
+                v = f'<video autoplay loop muted playsinline preload="metadata"{poster}><source src="{m["mp4"]}" type="video/mp4"></video>'
+            else:
+                v = f'<img src="{m.get("gif", m.get("poster", ""))}" alt="{label}" loading="lazy">'
+            cells += f'<div class="vcell">{v}<div class="vname">{label}</div></div>'
+        return f'<figure class="anim"><div class="vrow">{cells}</div><figcaption>{b[2]}</figcaption></figure>'
 
 
 body = ""
@@ -343,6 +404,9 @@ a{{color:var(--accent)}}
 nav{{font-size:13px;display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 0;margin:0 0 10px}}
 nav a{{color:var(--muted);text-decoration:none}} nav a:hover{{color:var(--accent)}}
 footer{{font-size:13px;color:var(--muted);margin-top:60px;border-top:1px solid var(--rule);padding-top:16px}}
+.vrow{{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}}
+.vcell video,.vcell img{{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius:4px;background:#fff}}
+.vname{{font-size:13px;text-align:center;margin-top:5px;color:var(--muted)}}
 @media (max-width:600px){{.teaser{{grid-template-columns:repeat(3,1fr)}}}}
 </style>
 </head>
