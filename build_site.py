@@ -270,13 +270,13 @@ FB_CAPTION = ("Each loop plays the network's label (orange: probability that a p
               "In the SAM 3 networks the first pass labels the square and the controls alike, and the loop removes the label from the controls; in the no-layer-label control the loop builds a label on everything.")
 S.insert([i for i, (sid, _, _) in enumerate(S) if sid == "cued"][0] + 1,
          ("feedback", "Feedback inside pretrained transformers",
-          [("p", jlines("results_feedback", [2, 3, 4])),
+          [("p", jlines("results_feedback", [3, 4, 5])),
            ("v", fb_media, FB_CAPTION),
-           ("p", jlines("results_feedback", [9, 10, 11, 12])),
+           ("p", jlines("results_feedback", [10, 11, 12, 13])),
            ("f", fig("fig_fb_steps.pdf"), caption("fig:fbsteps")),
-           ("p", jlines("results_feedback", [14, 15, 16, 17])),
+           ("p", jlines("results_feedback", [15, 16, 17, 18])),
            ("f", fig("fig_fb_depth.pdf"), caption("fig:fbdepth")),
-           ("p", jlines("results_feedback", [26, 27, 28, 29])),
+           ("p", jlines("results_feedback", [27, 28, 29, 30])),
            ("f", fig("fig_fb_pacmen.pdf"), caption("fig:fbpacmen"), "narrow")]))
 
 # ---------------------------------------------------------------- copy overrides (site/copy.json, written from an Astra rewrite)
