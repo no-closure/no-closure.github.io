@@ -216,12 +216,12 @@ S.append(("where", "Where closure emerges, and what the maps show",
            ("v", [(media(n), l) for n, l in [("layers_full_vit_b16", "ViT-B/16, fine-tuned"), ("layers_full_dinov2_s14", "DINOv2-S, fine-tuned"), ("layers_full_resnet50", "ResNet50, fine-tuned"), ("layers_probe_vgg16", "VGG16, frozen")]],
             "The contour probe (a logistic regression per layer that labels a cell as holding contour, fitted on complete outlines) played layer by layer, in orange over the stimulus: a Kanizsa square (inducer radius 1.5 patches), its rotated control, the complete outline, the square with corners removed and the same pieces rotated. The probe follows drawn contour from the first block and fills one-patch gaps in the middle blocks; the illusory edges stay empty at every layer.")]))
 S.append(("recurrence", "Recurrence does not consistently add closure",
-          [("p", sentences("Looped transformers and recirculation", [0]) + " " + sentences("Horizontal and top-down recurrent circuits", [2, 0, 1, 5])),
+          [("p", sentences("Looped transformers and recirculation", [1]) + " " + sentences("Horizontal and top-down recurrent circuits", [3, 2, 6])),
            ("f", fig("fig_recurrence.pdf"), caption("fig:recurrence")),
            ("v", [(media(n), l) for n, l in [("layers_looped_vit_b16", "looped ViT-B/16, 24 executed blocks"), ("layers_hgru", "fGRU-H, 8 iterations"), ("layers_gammanet", "γ-net, 8 iterations"), ("layers_dn_fgru_L8", "DN fGRU L8, 8 iterations")]],
             "The same contour probe over the looped transformer's executed blocks and over the recurrent circuits' iterations (the state the classifier reads). Passes through the core repeat the same map; in the circuits the map is set in the first iteration and sharpens on the drawn contour. The gap between the inducers stays empty.")]))
 S.append(("tracing", "Networks trained to trace contours link pieces but do not complete them",
-          [("p", sentences("Networks trained to trace contours link pieces but do not complete them", 2)),
+          [("p", sentences("Contour tracers", 2)),
            ("f", fig("fig_tracing.pdf"), caption("fig:tracing"))]))
 S.append(("gap", "The bridgeable gap is far smaller than the receptive field",
           [("p", sentences("Accuracy falls with the number of empty patches", 2)),
@@ -234,7 +234,7 @@ S.append(("inside", "What happens inside the gap",
            ("f", fig("fig_gapdyn.pdf"), caption("fig:gapdyn")),
            ("p", sentences("Little evidence of boundary completion", 3))]))
 S.append(("probe", "Between the inducers",
-          [("p", sentences("Nothing is represented between the inducers", [0, 5, 6, 7])),
+          [("p", sentences("The empty cells between the inducers", [0, 5, 6, 7])),
            ("f", fig("fig_probe.pdf"), caption("fig:probe"))]))
 S.append(("mae", "Masked autoencoders",
           [("p", sentences("Masked autoencoders draw the illusory edge only when the inducers are hidden too", [0, 1, 2, 3])),
@@ -245,17 +245,17 @@ S.append(("patch", "Activation patching",
            ("f", fig("fig_gap_patch.png"), caption("fig:patch"), "narrow"),
            ("p", sentences("The transformers' Kanizsa evidence does not pass through the gaps", [5, 6, 7]))]))
 S.append(("cued", "Cued segmentation circuits",
-          [("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [0, 1, 2, 10, 11, 12])),
+          [("p", sentences("Cued segmentation circuits", [0, 1, 2, 10, 11, 12])),
            ("f", fig("fig_cued_gap.pdf"), caption("fig:cuedgap")),
-           ("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [15, 25])),
-           ("p", sentences("Circuits trained for incremental grouping label an illusory surface only across small gaps, and without needing recurrence", [26, 28, 29, 32]))]))
+           ("p", sentences("Cued segmentation circuits", [15, 25])),
+           ("p", sentences("Cued segmentation circuits", [26, 28, 29, 32]))]))
 S.append(("audit", "Published closure measures fail null observers",
-          [("p", sentences("Auditing published closure measures", [0, 4, 2, 3])),
+          [("p", sentences("Audit of published closure measures", [0, 4, 2, 3])),
            ("f", fig("fig_ce_stimuli.pdf"), caption("fig:cestim")),
            ("f", fig("fig_audit.pdf"), caption("fig:audit")),
            ("f", fig("fig_audit2.pdf"), caption("fig:audit2"))]))
 S.append(("faith", "Saliency overlays are often not faithful",
-          [("p", sentences("Saliency overlays are often not faithful", 3)),
+          [("p", sentences("Faithfulness of saliency overlays", 3)),
            ("f", fig("fig_faith.pdf"), caption("fig:faith"), "narrow")]))
 S.append(("table", "Results for every network", [("t", table_html(), TABLE_NOTE)]))
 
