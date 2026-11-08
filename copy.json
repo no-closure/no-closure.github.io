@@ -43,7 +43,7 @@
    "id": "tracing",
    "title": "Contour tracing",
    "paragraphs": [
-    "Our recurrent circuits learned from complete outlines, a task that never demands long-range integration, so we also probed networks trained to segment the dashed contour carrying a marker, a Pathfinder-style curve-tracing task (Jolicoeur et al., 1986; Roelfsema et al., 1998). These networks include an hGRU, two xhGRUs trained on contours of 6 and 14 dashes, an fGRU/<i>γ</i>-net and weight-tied looped local-attention transformers. The companion project calls its models xhGRUs when it replaces the hGRU's per-iteration batch normalization with group normalization (Wu & He, 2018) shared across iterations. We took these networks from that project without retraining; their validation intersection-over-union (IoU) is 0.92–0.996 on 128 px images, and 0.80 for the untied control below. The training target is the full dashed contour, so a network that completes gaps has no reason to label them."
+    "Our recurrent circuits learned from complete outlines, a task that never demands long-range integration, so we also probed networks trained to segment the dashed contour carrying a marker, a Pathfinder-style curve-tracing task (Jolicoeur et al., 1986; Roelfsema et al., 1998). These networks include an hGRU, two hGRUs with group normalization in place of batch normalization, trained on contours of 6 and 14 dashes, an fGRU/<i>γ</i>-net and weight-tied looped local-attention transformers. We took these networks from that project without retraining; their validation intersection-over-union (IoU) is 0.92–0.996 on 128 px images, and 0.80 for the untied control below. The training target is the full dashed contour, so a network that completes gaps has no reason to label them."
    ]
   },
   {

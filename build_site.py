@@ -114,6 +114,8 @@ def sentences(label_or_title, n):
     body = m.group(1)
     body = re.sub(r"\\begin\{(figure|table)\}.*?\\end\{\1\}", "", body, flags=re.S)
     body = re.sub(r"\\label\{[^}]*\}", "", body)
+    body = re.sub(r"(?m)^\s*%.*$", "", body)   # comment lines (the journey files start with one)
+    body = re.sub(r"(?m)^\\input\{[^}]*\}\s*$", "", body)
     sents = [x.strip() for x in body.strip().split("\n") if x.strip()]
     pick = sents[:n] if isinstance(n, int) else [sents[i] for i in n]
     return " ".join(tex2html(x) for x in pick)
