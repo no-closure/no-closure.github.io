@@ -259,6 +259,20 @@ S.append(("faith", "Saliency overlays are often not faithful",
            ("f", fig("fig_faith.pdf"), caption("fig:faith"), "narrow")]))
 S.append(("table", "Results for every network", [("t", table_html(), TABLE_NOTE)]))
 
+
+def glossary_html():
+    body = open(os.path.join(ROOT, "papers/tmlr/journey/glossary.tex")).read()
+    rows = [l for l in body.split("\n") if "&" in l and "\\\\" in l and not l.startswith("term")]
+    out = ["<table><thead><tr><th>term</th><th>meaning here</th></tr></thead><tbody>"]
+    for r in rows:
+        a, b = r.rstrip("\\").split("&", 1)
+        out.append(f"<tr><th>{tex2html(a.strip())}</th><td style=\"text-align:left;white-space:normal\">{tex2html(b.strip())}</td></tr>")
+    out.append("</tbody></table>")
+    return "\n".join(out)
+
+
+S.append(("terms", "Terms", [("t", glossary_html(), "The terms used on this page and in the paper, in the order a reader meets them.")]))
+
 # ---- the feedback networks (journey write-up, 2026-11-07): step-by-step animations per network, from papers/assets/anim
 FB_NETS = [("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_sam3_olfd_s1_sel", "SAM 3, faded covers, seed 1"),
            ("p1_j21l_ol_s0_sel", "V-JEPA 2.1 L, seed 0"), ("p1_j21l_ol_s1_sel", "V-JEPA 2.1 L, seed 1"), ("p1_j21l_olnl_s1_sel", "2.1 L, no layer labels"),
@@ -270,7 +284,9 @@ FB_CAPTION = ("Each loop plays the network's label (orange: probability that a p
               "In the SAM 3 networks the first pass labels the square and the controls alike, and the loop removes the label from the controls; in the no-layer-label control the loop builds a label on everything.")
 S.insert([i for i, (sid, _, _) in enumerate(S) if sid == "cued"][0] + 1,
          ("feedback", "Feedback inside pretrained transformers",
-          [("p", jlines("results_feedback", [3, 4, 5])),
+          [("f", fig("fig_fb_arch.pdf"), caption("fig:fbarch")),
+           ("f", fig("fig_fb_battery.png"), caption("fig:fbbattery")),
+           ("p", jlines("results_feedback", [3, 4, 5])),
            ("v", fb_media, FB_CAPTION),
            ("p", jlines("results_feedback", [10, 11, 12, 13])),
            ("f", fig("fig_fb_steps.pdf"), caption("fig:fbsteps")),
