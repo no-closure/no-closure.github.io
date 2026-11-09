@@ -200,7 +200,7 @@ S.append(("animations", "The signal, layer by layer and step by step",
                        ("growth_cued_hgru_coco_k3", "hGRU, 3 x 3 kernel"), ("growth_cued_hgru_coco_T1", "hGRU, trained with one step"), ("growth_cued_gamma_fg3", "fGRU, weighted loss")]),
             "Cued segmentation circuits: the label (yellow) growing from the cue (orange dot, placed by us at the hexagon's centre in every display; the circuit is asked what object lies there and never has to find the hexagon) over steps 1 to 60 on the large hexagon (its sides dashed in blue), at gaps of 4 to 36 px between the inducers (support ratio 0.95 to 0.50; columns), for the Kanizsa display, the gaps closed by a solid or a dashed line, full discs and rotated inducers (rows). "
             "The label floods in the first steps, including between rotated inducers and outside the figure, and is then pruned back: to the figure where the gaps are small, to nothing where they are wide. Without any cue the looped transformer and the 15 x 15 hGRU label nothing, while the 3 x 3 hGRU, the one-step hGRU and the weighted-loss fGRU label the Kanizsa hexagon as much as when cued, with the same gap limit."),
-           ("v", vrow([("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_sam3_olfd_s1_sel", "SAM 3, faded covers, seed 1"),
+           ("v", vrow([("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_f3_ol_s0_sel", "DINOv3 ViT-B/16, seed 0"),
                        ("p1_j21l_ol_s0_sel", "V-JEPA 2.1 L, seed 0"), ("p1_j21l_ol_s1_sel", "V-JEPA 2.1 L, seed 1"), ("p1_j21l_olnl_s1_sel", "2.1 L, no layer labels"),
                        ("p1_j20_ol_s0_sel", "V-JEPA 2 L, seed 0"), ("lvu224_ol_s0_sel", "LeVJEPA L, whole encoder"), ("p1_s3j21_ol_s0_sel", "SAM 3 front + 2.1 back")]), "Feedback inside pretrained transformers. " + ANIM_CAP_STEPS)]))
 S.append(("stimuli", "Stimuli sized in patch units",
@@ -275,7 +275,7 @@ def glossary_html():
 S.append(("terms", "Terms", [("t", glossary_html(), "The terms used on this page and in the paper, in the order a reader meets them.")]))
 
 # ---- the feedback networks (journey write-up, 2026-11-07): step-by-step animations per network, from papers/assets/anim
-FB_NETS = [("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_sam3_olfd_s1_sel", "SAM 3, faded covers, seed 1"),
+FB_NETS = [("p1_sam3_ol_s0_sel", "SAM 3, seed 0"), ("p1_sam3_ol_s1_sel", "SAM 3, seed 1"), ("p1_f3_ol_s0_sel", "DINOv3 ViT-B/16, seed 0"),
            ("p1_j21l_ol_s0_sel", "V-JEPA 2.1 L, seed 0"), ("p1_j21l_ol_s1_sel", "V-JEPA 2.1 L, seed 1"), ("p1_j21l_olnl_s1_sel", "2.1 L, no layer labels"),
            ("p1_j20_ol_s0_sel", "V-JEPA 2 L, seed 0"), ("lvu224_ol_s0_sel", "LeVJEPA L, whole encoder"), ("p1_s3j21_ol_s0_sel", "SAM 3 front + 2.1 back")]
 fb_media = [(media(n), lab) for n, lab in FB_NETS]
